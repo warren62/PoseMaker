@@ -5,19 +5,27 @@ import javafx.scene.control.Button;
 import java.io.IOException;
 import java.util.ArrayList;
 import javafx.geometry.Pos;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
+import javafx.scene.control.SplitPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Ellipse;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
+import pm.PoseMaker;
 import pm.PropertyType;
+import pm.controller.PoseMakerController;
 import properties_manager.PropertiesManager;
-import saf.ui.AppGUI;
 import saf.AppTemplate;
 import saf.components.AppWorkspaceComponent;
+import saf.ui.AppGUI;
+//import saf.ui.AppGUI;
+//import saf.AppTemplate;
+//import saf.components.AppWorkspaceComponent;
 
 /**
  * This class serves as the workspace component for this application, providing
@@ -49,7 +57,9 @@ public class Workspace extends AppWorkspaceComponent {
     AppGUI gui;
 
     
-    PropertiesManager propsSingleton = PropertiesManager.getPropertiesManager();
+    PoseMakerController poseMakerController;
+    
+    
 
     
     //Left side of gui.
@@ -86,6 +96,10 @@ public class Workspace extends AppWorkspaceComponent {
     HBox snapshotPane;
     Button snapshotBtn;
     
+    Canvas canvas;
+    
+    SplitPane workspaceSplitPane;
+    
     Shape selectedRect;
     Shape selectedEllipse;
     ArrayList shapeList;
@@ -116,6 +130,10 @@ public class Workspace extends AppWorkspaceComponent {
         
 	// KEEP THE GUI FOR LATER
 	gui = app.getGUI();
+        
+        PropertiesManager propsSingleton = PropertiesManager.getPropertiesManager();
+        
+        poseMakerController = new PoseMakerController((PoseMaker) app);
         
         removeBtn = gui.initChildButton(topBtns, PropertyType.REMOVE_ICON.toString(), PropertyType.REMOVE_TOOLTIP.toString(), true);
         removeBtn.setMaxWidth(BUTTON_WIDTH);
@@ -161,10 +179,20 @@ public class Workspace extends AppWorkspaceComponent {
         outlineColor.getChildren().add(outlineColorPicker);
         outlineColor.setAlignment(Pos.CENTER);
         
+        outlineThickness = new HBox();
+        outlineThickness.getChildren().addAll(outlineThicknessLabel, slider);
+        
         snapshotBtn = gui.initChildButton(snapshotPane, PropertyType.SNAPSHOT_ICON.toString(), PropertyType.SNAPSHOT_TOOLTIP.toString(), true);
         snapshotPane.getChildren().add(snapshotBtn);
         
         leftPane.getChildren().addAll(topBtns, movePane, backgroundColor, outlineColor, snapshotPane);
+        
+        workspaceSplitPane = new SplitPane();
+	workspaceSplitPane.getItems().add(leftPane);
+	workspaceSplitPane.getItems().add(canvas);
+        
+        workspace = new Pane();
+        workspace.getChildren().add(workspaceSplitPane);
     }
     
     /**
@@ -188,6 +216,7 @@ public class Workspace extends AppWorkspaceComponent {
         moveUpBtn.getStyleClass().add(CLASS_TAG_BUTTON);
         moveDownBtn.getStyleClass().add(CLASS_TAG_BUTTON);
         leftPane.getStyleClass().addAll(CLASS_MAX_PANE, CLASS_BORDERED_PANE);
+        canvas.getStyleClass().addAll(CLASS_RENDER_CANVAS, CLASS_BORDERED_PANE);
     }
 
     /**
