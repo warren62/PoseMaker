@@ -10,9 +10,14 @@ import javafx.scene.control.ColorPicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.SplitPane;
+import javafx.scene.control.Tooltip;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Ellipse;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
@@ -22,10 +27,9 @@ import pm.controller.PoseMakerController;
 import properties_manager.PropertiesManager;
 import saf.AppTemplate;
 import saf.components.AppWorkspaceComponent;
+import static saf.settings.AppStartupConstants.FILE_PROTOCOL;
+import static saf.settings.AppStartupConstants.PATH_IMAGES;
 import saf.ui.AppGUI;
-//import saf.ui.AppGUI;
-//import saf.AppTemplate;
-//import saf.components.AppWorkspaceComponent;
 
 /**
  * This class serves as the workspace component for this application, providing
@@ -75,34 +79,37 @@ public class Workspace extends AppWorkspaceComponent {
     Button moveUpBtn;
     Button moveDownBtn;
     
-    HBox backgroundColor;
+    VBox backgroundColor;
     Label backgroundColorLabel; 
     Button backgroundColorBtn;
     ColorPicker backgroundColorPicker;
     
-    HBox fillColor;
+    VBox fillColor;
     Label fillColorLabel; 
     Button fillColorBtn;
     
-    HBox outlineColor;
+    VBox outlineColor;
     Label ooutlineColorLabel; 
     Button outlineColorBtn;
     ColorPicker outlineColorPicker;
     
-    HBox outlineThickness;
+    VBox outlineThickness;
     Label outlineThicknessLabel; 
     Slider slider;
     
     HBox snapshotPane;
     Button snapshotBtn;
     
-    Canvas canvas;
+    Pane canvas;
     
-    SplitPane workspaceSplitPane;
+    BorderPane workspaceSplitPane;
     
     Shape selectedRect;
     Shape selectedEllipse;
     ArrayList shapeList;
+    
+    double clickedX;
+    double clickedY;
     
     boolean isDrawingRect;
     boolean isDrawingEllipse;
@@ -118,81 +125,116 @@ public class Workspace extends AppWorkspaceComponent {
     public Workspace(AppTemplate initApp) throws IOException {
 	// KEEP THIS FOR LATER
 	app = initApp;
+        workspace = new Pane();
+//
 
-        workspace = new HBox();
-        
-        leftPane = new VBox();
-        
-        selectedRect = new Rectangle();
-        selectedEllipse = new Ellipse();
-        shapeList = new ArrayList<>(); 
-        
-        
-	// KEEP THE GUI FOR LATER
+
+////        workspace = new HBox();
+//        
+//        leftPane = new VBox();
+//        
+//        selectedRect = new Rectangle();
+//        selectedEllipse = new Ellipse();
+//        shapeList = new ArrayList<>(); 
+//        
+//        
+//	// KEEP THE GUI FOR LATER
 	gui = app.getGUI();
-        
+//        
         PropertiesManager propsSingleton = PropertiesManager.getPropertiesManager();
-        
+//        
         poseMakerController = new PoseMakerController((PoseMaker) app);
+
+        topBtns = new HBox();
+        movePane = new HBox();
+        backgroundColor = new VBox();
+        outlineColor = new VBox();
+        snapshotPane = new HBox();
+        canvas = new Pane();
+        leftPane = new VBox();
+        outlineThickness = new VBox();
+        fillColor = new VBox();
+        workspaceSplitPane = new BorderPane();
+        slider = new Slider();
+        outlineThicknessLabel = new Label();
         
         removeBtn = gui.initChildButton(topBtns, PropertyType.REMOVE_ICON.toString(), PropertyType.REMOVE_TOOLTIP.toString(), true);
-        removeBtn.setMaxWidth(BUTTON_WIDTH);
-	removeBtn.setMinWidth(BUTTON_WIDTH);
-	removeBtn.setPrefWidth(BUTTON_WIDTH);
-        removeBtn.setAlignment(Pos.CENTER);
+        removeBtn.setOnAction(e -> {
+            poseMakerController.handleRemoveShapeRequest();
+        });
         selectionBtn = gui.initChildButton(topBtns, PropertyType.SELECTION_TOOL_ICON.toString(), PropertyType.SELECTION_TOOL_TOOLTIP.toString(), true);
-        selectionBtn.setMaxWidth(BUTTON_WIDTH);
-	selectionBtn.setMinWidth(BUTTON_WIDTH);
-	selectionBtn.setPrefWidth(BUTTON_WIDTH);
-        selectionBtn.setAlignment(Pos.CENTER);
+
+        selectionBtn.setOnAction(e -> {
+            poseMakerController.handleSelectionShapeRequest();
+        });
         rectangleBtn = gui.initChildButton(topBtns, PropertyType.RECT_ICON.toString(), PropertyType.RECT_TOOLTIP.toString(), true);
-        rectangleBtn.setMaxWidth(BUTTON_WIDTH);
-	rectangleBtn.setMinWidth(BUTTON_WIDTH);
-	rectangleBtn.setPrefWidth(BUTTON_WIDTH);
-        rectangleBtn.setAlignment(Pos.CENTER);
+        rectangleBtn.setOnAction(e -> {
+            poseMakerController.handleAddShapeRequest();
+        });
         ellipseBtn = gui.initChildButton(topBtns, PropertyType.ELLIPSE_ICON.toString(), PropertyType.ELLIPSE_TOOLTIP.toString(), true);
-        ellipseBtn.setMaxWidth(BUTTON_WIDTH);
-	ellipseBtn.setMinWidth(BUTTON_WIDTH);
-	ellipseBtn.setPrefWidth(BUTTON_WIDTH);
-        ellipseBtn.setAlignment(Pos.CENTER);
-        topBtns.getChildren().addAll(selectionBtn, ellipseBtn, rectangleBtn, removeBtn);
-        topBtns.setAlignment(Pos.CENTER);
-        
-        moveUpBtn = gui.initChildButton(movePane, PropertyType.REMOVE_ICON.toString(), PropertyType.REMOVE_TOOLTIP.toString(), true);
-        moveUpBtn.setMaxWidth(BUTTON_WIDTH);
-	moveUpBtn.setMinWidth(BUTTON_WIDTH);
-	moveUpBtn.setPrefWidth(BUTTON_WIDTH);
-        moveUpBtn.setAlignment(Pos.CENTER);
-        moveDownBtn = gui.initChildButton(movePane, PropertyType.REMOVE_ICON.toString(), PropertyType.REMOVE_TOOLTIP.toString(), true);
-        moveDownBtn.setMaxWidth(BUTTON_WIDTH);
-	moveDownBtn.setMinWidth(BUTTON_WIDTH);
-	moveDownBtn.setPrefWidth(BUTTON_WIDTH);
-        moveDownBtn.setAlignment(Pos.CENTER);
-        movePane.getChildren().addAll(moveUpBtn, moveDownBtn);
-        movePane.setAlignment(Pos.CENTER);
-        
+        ellipseBtn.setOnAction(e -> {
+            poseMakerController.handleAddShapeRequest();
+        });
+//        topBtns.getChildren().addAll(selectionBtn, ellipseBtn, rectangleBtn, removeBtn);
+//        topBtns.setAlignment(Pos.CENTER);
+//        
+        moveUpBtn = gui.initChildButton(movePane, PropertyType.MOVE_UP_ICON.toString(), PropertyType.MOVE_UP_TOOLTIP.toString(), true);
+        moveUpBtn.setOnAction(e -> {
+            poseMakerController.handleMoveShapeRequest();
+        });
+        moveDownBtn = gui.initChildButton(movePane, PropertyType.MOVE_DOWN_ICON.toString(), PropertyType.MOVE_DOWN_TOOLTIP.toString(), true);
+        moveDownBtn.setOnAction(e -> {
+            poseMakerController.handleMoveShapeRequest();
+        });
+
+//        
         backgroundColorPicker = new ColorPicker();
         backgroundColor.getChildren().add(backgroundColorPicker);
         backgroundColor.setAlignment(Pos.CENTER);
+        
         
         outlineColorPicker = new ColorPicker();
         outlineColor.getChildren().add(outlineColorPicker);
         outlineColor.setAlignment(Pos.CENTER);
         
-        outlineThickness = new HBox();
+        
         outlineThickness.getChildren().addAll(outlineThicknessLabel, slider);
         
         snapshotBtn = gui.initChildButton(snapshotPane, PropertyType.SNAPSHOT_ICON.toString(), PropertyType.SNAPSHOT_TOOLTIP.toString(), true);
-        snapshotPane.getChildren().add(snapshotBtn);
+        snapshotBtn.setOnAction(e -> {
+            poseMakerController.handleSnapshotRequest();
+        });
         
-        leftPane.getChildren().addAll(topBtns, movePane, backgroundColor, outlineColor, snapshotPane);
+        canvas.setOnMousePressed(e -> {
+            clickedX = e.getX();
+            clickedY = e.getY();
+            poseMakerController.handleCanvasClickedRequest(clickedX, clickedY);
+        });
+        canvas.setOnMouseReleased(e -> {
+            poseMakerController.handleCanvasClickReleasedRequest(clickedX, clickedY);
+        });
+        canvas.setOnMouseDragged(e -> {
+            poseMakerController.handleCanvasDraggedRequest(clickedX, clickedY);
+        });
+      
+        leftPane.getChildren().addAll(topBtns, movePane, backgroundColor, outlineColor, outlineThickness,snapshotPane);
         
-        workspaceSplitPane = new SplitPane();
-	workspaceSplitPane.getItems().add(leftPane);
-	workspaceSplitPane.getItems().add(canvas);
+        canvas.getChildren().add(poseMakerController.getRectGroup());
         
-        workspace = new Pane();
+        
+	workspaceSplitPane.setLeft(leftPane);
+	workspaceSplitPane.setRight(canvas);
+        canvas.setMaxWidth(10000);
+
+
+        
+        
+//
+//        gui.getAppPane().setLeft(leftPane);
+//        gui.getAppPane().setRight(canvas);
         workspace.getChildren().add(workspaceSplitPane);
+//        
+        workspaceActivated = false;
     }
     
     /**
@@ -206,17 +248,18 @@ public class Workspace extends AppWorkspaceComponent {
 	// NOTE THAT EACH CLASS SHOULD CORRESPOND TO
 	// A STYLE CLASS SPECIFIED IN THIS APPLICATION'S
 	// CSS FILE
-        topBtns.getStyleClass().add(CLASS_EDIT_TOOLBAR);
-        backgroundColor.getStyleClass().add(CLASS_COLOR_CHOOSER_PANE);
-        outlineColor.getStyleClass().add(CLASS_COLOR_CHOOSER_PANE);
+        topBtns.getStyleClass().add(CLASS_BORDERED_PANE);
+        movePane.getStyleClass().add(CLASS_BORDERED_PANE);
+        backgroundColor.getStyleClass().add(CLASS_BORDERED_PANE);
+        outlineColor.getStyleClass().add(CLASS_BORDERED_PANE);
         removeBtn.getStyleClass().add(CLASS_TAG_BUTTON);
         selectionBtn.getStyleClass().add(CLASS_TAG_BUTTON);
         rectangleBtn.getStyleClass().add(CLASS_TAG_BUTTON);
         ellipseBtn.getStyleClass().add(CLASS_TAG_BUTTON);
         moveUpBtn.getStyleClass().add(CLASS_TAG_BUTTON);
         moveDownBtn.getStyleClass().add(CLASS_TAG_BUTTON);
-        leftPane.getStyleClass().addAll(CLASS_MAX_PANE, CLASS_BORDERED_PANE);
-        canvas.getStyleClass().addAll(CLASS_RENDER_CANVAS, CLASS_BORDERED_PANE);
+        leftPane.getStyleClass().add(CLASS_MAX_PANE);
+        canvas.getStyleClass().add(CLASS_RENDER_CANVAS);
     }
 
     /**
@@ -227,4 +270,6 @@ public class Workspace extends AppWorkspaceComponent {
     public void reloadWorkspace() {
 
     }
+    
+   
 }

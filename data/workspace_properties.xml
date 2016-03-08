@@ -7,18 +7,22 @@
 <properties>
     <property_list>
         <!-- PROGRAM ICON FILES -->        
-        <property name="REMOVE_ICON"	    value="Remove.png"></property>
-        <property name="ELLIPSE_ICON"	    value="Ellipse.png"></property>
-        <property name="RECT_ICON"	    value="Rect.png"></property>
-        <property name="SELECTION_TOOL_ICON"	    value="SelectionTool.png"></property>
-        <property name="SNAPSHOT_ICON"	    value="Snapshot.png"></property>
+        <property name="REMOVE_ICON"                    value="Remove.png"></property>
+        <property name="ELLIPSE_ICON"                   value="Ellipse.png"></property>
+        <property name="RECT_ICON"                      value="Rect.png"></property>
+        <property name="SELECTION_TOOL_ICON"            value="SelectionTool.png"></property>
+        <property name="SNAPSHOT_ICON"                  value="Snapshot.png"></property>
+        <property name="MOVE_UP_ICON"                   value="MoveToFront.png"></property>
+        <property name="MOVE_DOWN_ICON"                 value="MoveToBack.png"></property>
         
         <!-- TOOLTIPS FOR BUTTONS -->
-        <property name="REMOVE_TOOLTIP"	    value="Remove Element"></property>
+        <property name="REMOVE_TOOLTIP"             value="Remove Element"></property>
 	<property name="ELLIPSE_TOOLTIP"	    value="Ellipse"></property>
-        <property name="RECT_TOOLTIP"	    value="Recangle"></property>
+        <property name="RECT_TOOLTIP"               value="Recangle"></property>
         <property name="SELECTION_TOOL_TOOLTIP"	    value="Select"></property>
         <property name="SNAPSHOT_TOOLTIP"	    value="Snapshot"></property>
+        <property name="MOVE_UP_TOOLTIP"	    value="Move Up"></property>
+        <property name="MOVE_DOWN_TOOLTIP"	    value="Move Down"></property>
         
 	<!-- MESSAGES -->
 	<property name="REMOVE_MESSAGE"	    value="Are you sure you wish to remove that element?"></property>
@@ -38,7 +42,6 @@
 	<property name="CSS_EXPORT_ERROR_TITLE"		    value="CSS Export Error"></property>
 	<property name="UPDATE_ERROR_MESSAGE"		    value="An error occured updating the UI"></property>
 	<property name="UPDATE_ERROR_TITLE"		    value="UI Update Error"></property>
-
     </property_list>
     <property_options_list>
     </property_options_list>
