@@ -18,6 +18,8 @@ package pm;
 public enum PropertyType {
     SELECTION_TOOL_ICON,
     SELECTION_TOOL_TOOLTIP,
+    SNAPSHOT_ICON,
+    SNAPSHOT_TOOLTIP,
     RECT_ICON,
     RECT_TOOLTIP,
     ELLIPSE_ICON,
