@@ -216,7 +216,7 @@ public class Workspace extends AppWorkspaceComponent {
 
         canvas.setPrefSize(10000, 10000);
         
-        canvas.getChildren().add(poseMakerController.getRectGroup());
+//        canvas.getChildren().add(poseMakerController.getRectGroup());
         canvas.setMinWidth(10000);
         canvas.minHeight(10000);
         workspaceSplitPane.setLeft(leftPane);

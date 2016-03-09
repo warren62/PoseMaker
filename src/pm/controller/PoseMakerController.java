@@ -20,10 +20,10 @@ import pm.PoseMaker;
 public class PoseMakerController {
 
     PoseMaker app;
-    double clickedX;
-    double clickedY;
-    double draggedX, draggedY;
-    Group rectangleGroup = new Group();
+//    double clickedX;
+//    double clickedY;
+//    double draggedX, draggedY;
+//    Group rectangleGroup = new Group();
     Rectangle rect;
     Ellipse ellipse;
     
@@ -39,7 +39,8 @@ public class PoseMakerController {
         
         pane.setOnMouseClicked(e -> {
             
-            rect = new Rectangle(e.getX(), e.getY(), 0, 0);
+//            rect = new Rectangle(e.getX(), e.getY(), 0, 0);   
+            rect = paintRect(e.getX(), e.getY(), 0, 0);
             pane.getChildren().add(rect);
         });
         pane.setOnMouseDragged(e -> {
@@ -58,7 +59,8 @@ public class PoseMakerController {
         
         pane.setOnMouseClicked(e -> {
             
-            ellipse = new Ellipse(e.getX(), e.getY(), 0, 0);
+//            ellipse = new Ellipse(e.getX(), e.getY(), 0, 0);
+            ellipse = paintEllipse(e.getX(), e.getY(), 0, 0);
             pane.getChildren().add(ellipse);
         });
         pane.setOnMouseDragged(e -> {
@@ -99,39 +101,50 @@ public class PoseMakerController {
 
     }
 
-    public void handleCanvasClickedRequest(double clickedX, double clickedY) {
+//    public void handleCanvasClickedRequest(double clickedX, double clickedY) {
+//
+//        this.clickedX = clickedX;
+//        this.clickedY = clickedY;
+//        
+//        
+//    }
+//    
+//     public void handleCanvasDraggedRequest(double draggedX, double draggedY) {
+//
+//        this.draggedX = draggedX;
+//        this.draggedY = draggedY;
+//        paintRect();
+//        
+//        
+//    }
+//    
+//     public void handleCanvasClickReleasedRequest(double clickedX, double clickedY) {
+//
+//       paintRect();
+//        
+//        
+//    }
+//    
+    
 
-        this.clickedX = clickedX;
-        this.clickedY = clickedY;
-        
-        
+    public Rectangle paintRect(double clickedX, double clickedY, double draggedX, double draggedY) {
+       Rectangle r = new Rectangle(clickedX, clickedY, draggedX, draggedY);
+       r.setOnMousePressed(e -> {
+           r.setStroke(Color.YELLOW);
+           
+       });
+       return r;
     }
     
-     public void handleCanvasDraggedRequest(double draggedX, double draggedY) {
-
-        this.draggedX = draggedX;
-        this.draggedY = draggedY;
-        paintRect();
-        
-        
+    public Ellipse paintEllipse(double clickedX, double clickedY, double draggedX, double draggedY) {
+       Ellipse el = new Ellipse(clickedX, clickedY, draggedX, draggedY);
+       el.setOnMousePressed(e -> {
+           el.setStroke(Color.YELLOW);
+       });
+       return el;
     }
     
-     public void handleCanvasClickReleasedRequest(double clickedX, double clickedY) {
-
-       paintRect();
-        
-        
-    }
-    
-    
-
-    public void paintRect() {
-        Rectangle rect = new Rectangle(clickedX, clickedY, draggedX - clickedX, draggedY - clickedY);
-        rect.setFill(Color.RED);
-        rectangleGroup.getChildren().add(rect);
-    }
-    
-    public Group getRectGroup() {
-        return rectangleGroup;
-    }
+//    public Group getRectGroup() {
+//        return rectangleGroup;
+//    }
 }
