@@ -36,6 +36,7 @@ public class PoseMakerController {
     String rectId;
     String ellipseId;
     boolean selectable = true;
+    boolean selector;
 
     private static int count = 0;
 
@@ -47,7 +48,7 @@ public class PoseMakerController {
     public void handleAddRectRequest(Pane pane, ColorPicker outlinePicker, ColorPicker fillPicker, Slider slider) {
 
         pane.setCursor(Cursor.CROSSHAIR);
-
+        selector = false;
         pane.setOnMousePressed(e -> {
             if (e == null) {
                 return;
@@ -111,21 +112,46 @@ public class PoseMakerController {
 
             if (node.equals(selectedRect) || node.equals(selectedEllipse)) {
                 list.remove(node);
-                setSelectable(true);
             }
 
         }
 
     }
 
-    public void handleSelectionShapeRequest() {
+    public void handleSelectionShapeRequest(Pane pane) {
 
-        Shape shape;
+        pane.setCursor(Cursor.DEFAULT);
+        selector = true;
+        pane.setOnMouseClicked(e -> {});
+        pane.setOnMousePressed(e -> {});
+        pane.setOnMouseDragged(e -> {});
 
     }
 
-    public void handleMoveShapeRequest() {
+    public void handleMoveShapeUpRequest(Pane pane) {
 
+        ObservableList<Node> list = pane.getChildren();
+        if(list.size() > 1)
+         for (Node node : list) {
+         
+           list.remove(selectedRect);
+           list.add(selectedRect);
+             
+         }
+        
+    }
+    
+    public void handleMoveShapeDownRequest(Pane pane) {
+
+        ObservableList<Node> list = pane.getChildren();
+        if(list.size() > 1)
+         for (Node node : list) {
+         
+           list.remove(selectedRect);
+           list.add(selectedRect);
+             
+         }
+        
     }
 
     public void handleSnapshotRequest() {
@@ -207,8 +233,9 @@ public class PoseMakerController {
 
     public void select(Rectangle r, double sliderValue, Color borderColor, Color fillColor) {
 
-//        if (selectable) {
+//        if (selector) {
         r.setOnMousePressed(e -> {
+            if(selector) {
             if (selectedRect != null) {
                 selectedRect.setStroke(borderColor);
 //                getSelectedRect().setStrokeWidth(sliderValue);
@@ -217,11 +244,13 @@ public class PoseMakerController {
                 setSelectedRect(r);
 //                setSelectable(false);
             }
+            }
 
         });
 //        }
+}
 
-    }
+    
 
     public void deSelect(Rectangle r, ColorPicker outlinePicker, ColorPicker fillPicker, Slider slider) {
         r = getSelectedRect();

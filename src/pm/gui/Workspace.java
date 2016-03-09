@@ -161,10 +161,10 @@ public class Workspace extends AppWorkspaceComponent {
         removeBtn.setOnAction(e -> {
             poseMakerController.handleRemoveShapeRequest(canvas);
         });
-        selectionBtn = gui.initChildButton(topBtns, PropertyType.SELECTION_TOOL_ICON.toString(), PropertyType.SELECTION_TOOL_TOOLTIP.toString(), true);
+        selectionBtn = gui.initChildButton(topBtns, PropertyType.SELECTION_TOOL_ICON.toString(), PropertyType.SELECTION_TOOL_TOOLTIP.toString(), false);
 
         selectionBtn.setOnAction(e -> {
-            poseMakerController.handleSelectionShapeRequest();
+            poseMakerController.handleSelectionShapeRequest(canvas);
         });
         rectangleBtn = gui.initChildButton(topBtns, PropertyType.RECT_ICON.toString(), PropertyType.RECT_TOOLTIP.toString(), false);
         rectangleBtn.setOnAction(e -> {
@@ -177,13 +177,13 @@ public class Workspace extends AppWorkspaceComponent {
 //        topBtns.getChildren().addAll(selectionBtn, ellipseBtn, rectangleBtn, removeBtn);
 //        topBtns.setAlignment(Pos.CENTER);
 //        
-        moveUpBtn = gui.initChildButton(movePane, PropertyType.MOVE_UP_ICON.toString(), PropertyType.MOVE_UP_TOOLTIP.toString(), true);
+        moveUpBtn = gui.initChildButton(movePane, PropertyType.MOVE_UP_ICON.toString(), PropertyType.MOVE_UP_TOOLTIP.toString(), false);
         moveUpBtn.setOnAction(e -> {
-            poseMakerController.handleMoveShapeRequest();
+            poseMakerController.handleMoveShapeUpRequest(canvas);
         });
-        moveDownBtn = gui.initChildButton(movePane, PropertyType.MOVE_DOWN_ICON.toString(), PropertyType.MOVE_DOWN_TOOLTIP.toString(), true);
+        moveDownBtn = gui.initChildButton(movePane, PropertyType.MOVE_DOWN_ICON.toString(), PropertyType.MOVE_DOWN_TOOLTIP.toString(), false);
         moveDownBtn.setOnAction(e -> {
-            poseMakerController.handleMoveShapeRequest();
+//            poseMakerController.handleMoveShapeRequest();
         });
         
         movePane.setAlignment(Pos.CENTER);
