@@ -172,7 +172,7 @@ public class Workspace extends AppWorkspaceComponent {
         });
         ellipseBtn = gui.initChildButton(topBtns, PropertyType.ELLIPSE_ICON.toString(), PropertyType.ELLIPSE_TOOLTIP.toString(), false);
         ellipseBtn.setOnAction(e -> {
-            poseMakerController.handleAddEllipseRequest(canvas, outlineColorPicker, fillColorPicker, slider);
+            poseMakerController.handleAddEllipseRequest(canvas, false, outlineColorPicker, fillColorPicker, slider);
         });
 //        topBtns.getChildren().addAll(selectionBtn, ellipseBtn, rectangleBtn, removeBtn);
 //        topBtns.setAlignment(Pos.CENTER);
@@ -222,11 +222,11 @@ public class Workspace extends AppWorkspaceComponent {
 
         leftPane.getChildren().addAll(topBtns, movePane, backgroundColor, outlineColor, fillColor, outlineThickness, snapshotPane);
 
-        canvas.setPrefSize(10000, 10000);
+        canvas.setPrefSize(1800, 1800);
         
 //        canvas.getChildren().add(poseMakerController.getRectGroup());
-        canvas.setMinWidth(10000);
-        canvas.minHeight(10000);
+//        canvas.setMinWidth(10000);
+//        canvas.minHeight(10000);
         workspaceSplitPane.setLeft(leftPane);
         workspaceSplitPane.setRight(canvas);
 
