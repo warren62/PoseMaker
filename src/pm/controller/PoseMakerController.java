@@ -30,12 +30,12 @@ public class PoseMakerController {
 //    double draggedX, draggedY;
 //    Group rectangleGroup = new Group();
     Rectangle rect;
-    Rectangle selectedRect;
+    Rectangle selectedRect = new Rectangle();
     Ellipse ellipse;
     Ellipse selectedEllipse;
     String rectId;
     String ellipseId;
-    boolean selectable;
+    boolean selectable = true;
 
     private static int count = 0;
 
@@ -111,6 +111,7 @@ public class PoseMakerController {
 
             if (node.equals(selectedRect) || node.equals(selectedEllipse)) {
                 list.remove(node);
+                setSelectable(true);
             }
 
         }
@@ -127,29 +128,22 @@ public class PoseMakerController {
 
     }
 
-    public void handleBackgroundColorChangeRequest() {
-
-    }
-
-    public void handleOutlineColorChangeRequest() {
-
-    }
-
-    public void handleOutlineThicknessChangeRequest() {
-
-    }
-
     public void handleSnapshotRequest() {
 
     }
 
-//    public void handleCanvasClickedRequest(double clickedX, double clickedY) {
-//
-//        this.clickedX = clickedX;
-//        this.clickedY = clickedY;
-//        
-//        
-//    }
+    public void handleCanvasClickedRequest(Pane pane, boolean selectable, ColorPicker outlinePicker, ColorPicker fillPicker, Slider slider) {
+
+        pane.setOnMousePressed(e -> {
+
+            pane.setCursor(Cursor.DEFAULT);
+            Rectangle r = getSelectedRect();
+            deSelect(r, outlinePicker, fillPicker, slider);
+            setSelectable(selectable);
+
+        });
+
+    }
 //    
 //     public void handleCanvasDraggedRequest(double draggedX, double draggedY) {
 //
@@ -167,6 +161,7 @@ public class PoseMakerController {
 //        
 //    }
 //    
+
     public Rectangle paintRect(double clickedX, double clickedY, double draggedX, double draggedY, double sliderValue, Color borderColor, Color fillColor) {
 
         Rectangle r = new Rectangle(clickedX, clickedY, draggedX, draggedY);
@@ -174,15 +169,25 @@ public class PoseMakerController {
         r.setFill(fillColor);
         r.setStroke(borderColor);
         r.setStrokeWidth(sliderValue);
-        rectId = r.getId();
-        if (selectable) {
-            r.setOnMousePressed(e -> {
-                r.setStroke(Color.YELLOW);
-                r.setStrokeWidth(10);
-                selectedRect = r;
 
-            });
-        }
+//         r.setOnMousePressed(e -> {
+//                r.setStroke(Color.GREEN);
+//                r.setStrokeWidth(sliderValue);
+//                r.setStroke(Color.YELLOW);
+//                r.setStrokeWidth(10);
+//                setSelectedRect(r);
+////                setSelectable(false);
+//
+//            });
+//        if (selectable) {
+//            r.setOnMousePressed(e -> {
+//                r.setStroke(Color.YELLOW);
+//                r.setStrokeWidth(10);
+//                selectedRect = r;
+//
+//            });
+//        }
+        select(r, sliderValue, borderColor, fillColor);
         return r;
     }
 
@@ -200,8 +205,43 @@ public class PoseMakerController {
         return el;
     }
 
+    public void select(Rectangle r, double sliderValue, Color borderColor, Color fillColor) {
+
+//        if (selectable) {
+        r.setOnMousePressed(e -> {
+            if (selectedRect != null) {
+                selectedRect.setStroke(borderColor);
+//                getSelectedRect().setStrokeWidth(sliderValue);
+                r.setStroke(Color.YELLOW);
+                r.setStrokeWidth(10);
+                setSelectedRect(r);
+//                setSelectable(false);
+            }
+
+        });
+//        }
+
+    }
+
+    public void deSelect(Rectangle r, ColorPicker outlinePicker, ColorPicker fillPicker, Slider slider) {
+        r = getSelectedRect();
+        r.setFill(fillPicker.getValue());
+        r.setStroke(outlinePicker.getValue());
+        r.setStrokeWidth(slider.getValue());
+//        setSelectedRect(r);
+    }
+
+    /**
+     *
+     * @param selectable
+     */
     public void setSelectable(boolean selectable) {
         this.selectable = selectable;
+    }
+
+    public void setSelectedRect(Rectangle selectedR) {
+//        if(selectable)
+        selectedRect = selectedR;
     }
 
     public Rectangle getSelectedRect() {
