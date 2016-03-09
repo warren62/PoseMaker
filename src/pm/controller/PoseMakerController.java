@@ -5,12 +5,17 @@
  */
 package pm.controller;
 
+import javafx.collections.ObservableList;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
+import javafx.scene.Node;
+import javafx.scene.control.ColorPicker;
+import javafx.scene.control.Slider;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Ellipse;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Shape;
 import pm.PoseMaker;
 
 /**
@@ -25,7 +30,11 @@ public class PoseMakerController {
 //    double draggedX, draggedY;
 //    Group rectangleGroup = new Group();
     Rectangle rect;
+    Rectangle selectedRect;
     Ellipse ellipse;
+    Ellipse selectedEllipse;
+    String rectId;
+    String ellipseId;
     
 
     public PoseMakerController(PoseMaker initApp) {
@@ -33,14 +42,15 @@ public class PoseMakerController {
         app = initApp;
     }
 
-    public void handleAddRectRequest(Pane pane) {
+    public void handleAddRectRequest(Pane pane, ColorPicker outlinePicker, ColorPicker fillPicker, Slider slider) {
 
         pane.setCursor(Cursor.CROSSHAIR);
         
         pane.setOnMouseClicked(e -> {
             
 //            rect = new Rectangle(e.getX(), e.getY(), 0, 0);   
-            rect = paintRect(e.getX(), e.getY(), 0, 0);
+            rect = paintRect(e.getX(), e.getY(), 0, 0, slider.getValue(), outlinePicker.getValue(), fillPicker.getValue());
+           
             pane.getChildren().add(rect);
         });
         pane.setOnMouseDragged(e -> {
@@ -53,14 +63,14 @@ public class PoseMakerController {
         
     }
     
-    public void handleAddEllipseRequest(Pane pane) {
+    public void handleAddEllipseRequest(Pane pane, ColorPicker outlinePicker, ColorPicker fillPicker, Slider slider ) {
 
         pane.setCursor(Cursor.CROSSHAIR);
         
         pane.setOnMouseClicked(e -> {
             
 //            ellipse = new Ellipse(e.getX(), e.getY(), 0, 0);
-            ellipse = paintEllipse(e.getX(), e.getY(), 0, 0);
+            ellipse = paintEllipse(e.getX(), e.getY(), 0, 0, slider.getValue(), outlinePicker.getValue(), fillPicker.getValue());
             pane.getChildren().add(ellipse);
         });
         pane.setOnMouseDragged(e -> {
@@ -73,12 +83,29 @@ public class PoseMakerController {
         
     }
 
-    public void handleRemoveShapeRequest() {
+    public void handleRemoveShapeRequest(Pane pane) {
 
+        ObservableList<Node> list = pane.getChildren();
+        for(Node node : list) {
+//            if(node.getId().equals(rectId) || node.getId().equals(ellipseId) 
+//                    && getSelectedRect().getId().equals(rectId) || 
+//                    getSelectedEllipse().getId().equals(ellipseId)) {
+//                list.remove(node);
+//            }
+
+               if(node.equals(selectedRect) || node.equals(selectedEllipse)) {
+                   list.remove(node);
+               }
+            
+        }
+        
+        
     }
 
     public void handleSelectionShapeRequest() {
 
+        Shape shape;
+        
     }
 
     public void handleMoveShapeRequest() {
@@ -127,21 +154,41 @@ public class PoseMakerController {
 //    
     
 
-    public Rectangle paintRect(double clickedX, double clickedY, double draggedX, double draggedY) {
+    public Rectangle paintRect(double clickedX, double clickedY, double draggedX, double draggedY, double sliderValue, Color borderColor, Color fillColor) {
        Rectangle r = new Rectangle(clickedX, clickedY, draggedX, draggedY);
+       r.setFill(fillColor);
+       r.setStroke(borderColor);
+       r.setStrokeWidth(sliderValue);
+       rectId = r.getId();
        r.setOnMousePressed(e -> {
            r.setStroke(Color.YELLOW);
+           r.setStrokeWidth(10);
+           selectedRect = r;
            
        });
        return r;
     }
     
-    public Ellipse paintEllipse(double clickedX, double clickedY, double draggedX, double draggedY) {
+    public Ellipse paintEllipse(double clickedX, double clickedY, double draggedX, double draggedY, double sliderValue, Color borderColor, Color fillColor) {
        Ellipse el = new Ellipse(clickedX, clickedY, draggedX, draggedY);
+       el.setFill(fillColor);
+       el.setStroke(borderColor);
+       el.setStrokeWidth(sliderValue);
+       ellipseId = el.getId();
        el.setOnMousePressed(e -> {
            el.setStroke(Color.YELLOW);
+           el.setStrokeWidth(10);
+           selectedEllipse = el;
        });
        return el;
+    }
+    
+    public Rectangle getSelectedRect() {
+        return selectedRect;
+    }
+    
+     public Ellipse getSelectedEllipse() {
+        return selectedEllipse;
     }
     
 //    public Group getRectGroup() {

@@ -82,6 +82,7 @@ public class Workspace extends AppWorkspaceComponent {
     VBox fillColor;
     Label fillColorLabel;
     Button fillColorBtn;
+    ColorPicker fillColorPicker;
 
     VBox outlineColor;
     Label outlineColorLabel;
@@ -154,10 +155,11 @@ public class Workspace extends AppWorkspaceComponent {
         outlineThicknessLabel = new Label("Outline Thickness");
         outlineColorLabel = new Label("Outline Color");
         backgroundColorLabel = new Label("Background Color");
+        fillColorLabel = new Label("Fill Color");
 
-        removeBtn = gui.initChildButton(topBtns, PropertyType.REMOVE_ICON.toString(), PropertyType.REMOVE_TOOLTIP.toString(), true);
+        removeBtn = gui.initChildButton(topBtns, PropertyType.REMOVE_ICON.toString(), PropertyType.REMOVE_TOOLTIP.toString(), false);
         removeBtn.setOnAction(e -> {
-            poseMakerController.handleRemoveShapeRequest();
+            poseMakerController.handleRemoveShapeRequest(canvas);
         });
         selectionBtn = gui.initChildButton(topBtns, PropertyType.SELECTION_TOOL_ICON.toString(), PropertyType.SELECTION_TOOL_TOOLTIP.toString(), true);
 
@@ -166,11 +168,11 @@ public class Workspace extends AppWorkspaceComponent {
         });
         rectangleBtn = gui.initChildButton(topBtns, PropertyType.RECT_ICON.toString(), PropertyType.RECT_TOOLTIP.toString(), false);
         rectangleBtn.setOnAction(e -> {
-            poseMakerController.handleAddRectRequest(canvas);
+            poseMakerController.handleAddRectRequest(canvas, outlineColorPicker, fillColorPicker, slider);
         });
         ellipseBtn = gui.initChildButton(topBtns, PropertyType.ELLIPSE_ICON.toString(), PropertyType.ELLIPSE_TOOLTIP.toString(), false);
         ellipseBtn.setOnAction(e -> {
-            poseMakerController.handleAddEllipseRequest(canvas);
+            poseMakerController.handleAddEllipseRequest(canvas, outlineColorPicker, fillColorPicker, slider);
         });
 //        topBtns.getChildren().addAll(selectionBtn, ellipseBtn, rectangleBtn, removeBtn);
 //        topBtns.setAlignment(Pos.CENTER);
@@ -183,6 +185,8 @@ public class Workspace extends AppWorkspaceComponent {
         moveDownBtn.setOnAction(e -> {
             poseMakerController.handleMoveShapeRequest();
         });
+        
+        movePane.setAlignment(Pos.CENTER);
 
 //        
         backgroundColorPicker = new ColorPicker();
@@ -192,6 +196,10 @@ public class Workspace extends AppWorkspaceComponent {
         outlineColorPicker = new ColorPicker();
         outlineColor.getChildren().addAll(outlineColorLabel, outlineColorPicker);
         outlineColor.setAlignment(Pos.CENTER);
+        
+        fillColorPicker = new ColorPicker();
+        fillColor.getChildren().addAll(fillColorLabel, fillColorPicker);
+        fillColor.setAlignment(Pos.CENTER);
 
         outlineThickness.getChildren().addAll(outlineThicknessLabel, slider);
 
@@ -212,7 +220,7 @@ public class Workspace extends AppWorkspaceComponent {
 //            poseMakerController.handleCanvasDraggedRequest(clickedX, clickedY);
 //        });
 
-        leftPane.getChildren().addAll(topBtns, movePane, backgroundColor, outlineColor, outlineThickness, snapshotPane);
+        leftPane.getChildren().addAll(topBtns, movePane, backgroundColor, outlineColor, fillColor, outlineThickness, snapshotPane);
 
         canvas.setPrefSize(10000, 10000);
         
@@ -246,6 +254,7 @@ public class Workspace extends AppWorkspaceComponent {
         backgroundColor.getStyleClass().add(CLASS_BORDERED_PANE);
         outlineColor.getStyleClass().add(CLASS_BORDERED_PANE);
         outlineThickness.getStyleClass().add(CLASS_BORDERED_PANE);
+        fillColor.getStyleClass().add(CLASS_BORDERED_PANE);
         snapshotPane.getStyleClass().add(CLASS_BORDERED_PANE);
         removeBtn.getStyleClass().add(CLASS_TAG_BUTTON);
         selectionBtn.getStyleClass().add(CLASS_TAG_BUTTON);
@@ -255,6 +264,10 @@ public class Workspace extends AppWorkspaceComponent {
         moveDownBtn.getStyleClass().add(CLASS_TAG_BUTTON);
         leftPane.getStyleClass().add(CLASS_MAX_PANE);
         canvas.getStyleClass().add(CLASS_RENDER_CANVAS);
+        outlineThicknessLabel.getStyleClass().add(CLASS_HEADING_LABEL);
+        outlineColorLabel.getStyleClass().add(CLASS_HEADING_LABEL);
+        fillColorLabel.getStyleClass().add(CLASS_HEADING_LABEL);
+        backgroundColorLabel.getStyleClass().add(CLASS_HEADING_LABEL);
     }
 
     /**
