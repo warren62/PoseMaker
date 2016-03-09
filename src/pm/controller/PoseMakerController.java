@@ -5,8 +5,11 @@
  */
 package pm.controller;
 
+import javafx.scene.Cursor;
 import javafx.scene.Group;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Ellipse;
 import javafx.scene.shape.Rectangle;
 import pm.PoseMaker;
 
@@ -21,6 +24,8 @@ public class PoseMakerController {
     double clickedY;
     double draggedX, draggedY;
     Group rectangleGroup = new Group();
+    Rectangle rect;
+    Ellipse ellipse;
     
 
     public PoseMakerController(PoseMaker initApp) {
@@ -28,8 +33,42 @@ public class PoseMakerController {
         app = initApp;
     }
 
-    public void handleAddShapeRequest() {
+    public void handleAddRectRequest(Pane pane) {
 
+        pane.setCursor(Cursor.CROSSHAIR);
+        
+        pane.setOnMouseClicked(e -> {
+            
+            rect = new Rectangle(e.getX(), e.getY(), 0, 0);
+            pane.getChildren().add(rect);
+        });
+        pane.setOnMouseDragged(e -> {
+            rect.setWidth(e.getX() - rect.getX());
+            rect.setHeight(e.getY() - rect.getY());
+        });
+        pane.setOnMouseReleased(e -> {
+            rect = null;
+        });
+        
+    }
+    
+    public void handleAddEllipseRequest(Pane pane) {
+
+        pane.setCursor(Cursor.CROSSHAIR);
+        
+        pane.setOnMouseClicked(e -> {
+            
+            ellipse = new Ellipse(e.getX(), e.getY(), 0, 0);
+            pane.getChildren().add(ellipse);
+        });
+        pane.setOnMouseDragged(e -> {
+            ellipse.setRadiusX(e.getX() - ellipse.getRadiusX());
+            ellipse.setRadiusY(e.getY() - ellipse.getRadiusY());
+        });
+        pane.setOnMouseReleased(e -> {
+            ellipse = null;
+        });
+        
     }
 
     public void handleRemoveShapeRequest() {
@@ -88,6 +127,7 @@ public class PoseMakerController {
 
     public void paintRect() {
         Rectangle rect = new Rectangle(clickedX, clickedY, draggedX - clickedX, draggedY - clickedY);
+        rect.setFill(Color.RED);
         rectangleGroup.getChildren().add(rect);
     }
     
