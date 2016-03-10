@@ -164,7 +164,7 @@ public class Workspace extends AppWorkspaceComponent {
         selectionBtn = gui.initChildButton(topBtns, PropertyType.SELECTION_TOOL_ICON.toString(), PropertyType.SELECTION_TOOL_TOOLTIP.toString(), false);
 
         selectionBtn.setOnAction(e -> {
-            poseMakerController.handleSelectionShapeRequest(canvas);
+            poseMakerController.handleSelectionShapeRequest(canvas, outlineColorPicker.getValue(), fillColorPicker.getValue(), slider.getValue());
         });
         rectangleBtn = gui.initChildButton(topBtns, PropertyType.RECT_ICON.toString(), PropertyType.RECT_TOOLTIP.toString(), false);
         rectangleBtn.setOnAction(e -> {
@@ -183,7 +183,7 @@ public class Workspace extends AppWorkspaceComponent {
         });
         moveDownBtn = gui.initChildButton(movePane, PropertyType.MOVE_DOWN_ICON.toString(), PropertyType.MOVE_DOWN_TOOLTIP.toString(), false);
         moveDownBtn.setOnAction(e -> {
-//            poseMakerController.handleMoveShapeRequest();
+            poseMakerController.handleMoveShapeDownRequest(canvas);
         });
         
         movePane.setAlignment(Pos.CENTER);
@@ -203,14 +203,14 @@ public class Workspace extends AppWorkspaceComponent {
 
         outlineThickness.getChildren().addAll(outlineThicknessLabel, slider);
 
-        snapshotBtn = gui.initChildButton(snapshotPane, PropertyType.SNAPSHOT_ICON.toString(), PropertyType.SNAPSHOT_TOOLTIP.toString(), true);
+        snapshotBtn = gui.initChildButton(snapshotPane, PropertyType.SNAPSHOT_ICON.toString(), PropertyType.SNAPSHOT_TOOLTIP.toString(), false);
         snapshotBtn.setOnAction(e -> {
-            poseMakerController.handleSnapshotRequest();
+            poseMakerController.handleSnapshotRequest(canvas);
         });
 
-        canvas.setOnMousePressed(e -> {
-            poseMakerController.handleCanvasClickedRequest(canvas, true, outlineColorPicker, fillColorPicker, slider);
-        });
+//        canvas.setOnMousePressed(e -> {
+//            poseMakerController.handleCanvasClickedRequest(canvas, true, outlineColorPicker, fillColorPicker, slider);
+//        });
 //        canvas.setOnMouseReleased(e -> {
 //            poseMakerController.handleCanvasClickReleasedRequest(clickedX, clickedY);
 //        });

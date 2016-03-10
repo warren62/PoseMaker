@@ -5,17 +5,26 @@
  */
 package pm.controller;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.collections.ObservableList;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.SnapshotParameters;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.Slider;
+import javafx.scene.image.WritableImage;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Ellipse;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
+import javafx.stage.FileChooser;
+import javax.imageio.ImageIO;
 import pm.PoseMaker;
 
 /**
@@ -35,6 +44,8 @@ public class PoseMakerController {
     Ellipse selectedEllipse;
     String rectId;
     String ellipseId;
+    Color outlineColor, fillColor;
+    double sliderValue;
     boolean selectable = true;
     boolean selector;
 
@@ -118,58 +129,97 @@ public class PoseMakerController {
 
     }
 
-    public void handleSelectionShapeRequest(Pane pane) {
+    public void handleSelectionShapeRequest(Pane pane, Color outlineColor, Color fillColor, double sliderValue) {
 
         pane.setCursor(Cursor.DEFAULT);
         selector = true;
-        pane.setOnMouseClicked(e -> {});
-        pane.setOnMousePressed(e -> {});
-        pane.setOnMouseDragged(e -> {});
+        pane.setOnMouseClicked(e -> {
+//            if (selectedRect != null) {
+//                selectedRect.setStroke(outlineColor);
+//            }
+        });
+        pane.setOnMousePressed(e -> {
+//            deSelect(selectedRect, outlineColor, fillColor, sliderValue);
+
+        });
+        pane.setOnMouseDragged(e -> {
+
+            selectedRect.setX(e.getX() - (selectedRect.getWidth() / 2));
+            selectedRect.setY(e.getY() - (selectedRect.getHeight() / 2));
+        });
 
     }
 
     public void handleMoveShapeUpRequest(Pane pane) {
 
         ObservableList<Node> list = pane.getChildren();
-        if(list.size() > 1)
-         for (Node node : list) {
-         
-           list.remove(selectedRect);
-           list.add(selectedRect);
-             
-         }
-        
+        ObservableList<Node> removeList = pane.getChildren();
+        if (list.size() > 1) {
+            for (Node node : list) {
+
+                list.remove(selectedRect);
+                list.add(selectedRect);
+
+            }
+            list.removeAll(removeList);
+        }
+
     }
-    
+
     public void handleMoveShapeDownRequest(Pane pane) {
 
         ObservableList<Node> list = pane.getChildren();
-        if(list.size() > 1)
-         for (Node node : list) {
-         
-           list.remove(selectedRect);
-           list.add(selectedRect);
-             
-         }
-        
-    }
+        if (list.size() > 1) {
+            for (Node node : list) {
 
-    public void handleSnapshotRequest() {
+                list.remove(selectedRect);
+                list.add(0, selectedRect);
+
+            }
+        }
 
     }
 
-    public void handleCanvasClickedRequest(Pane pane, boolean selectable, ColorPicker outlinePicker, ColorPicker fillPicker, Slider slider) {
+    public void handleSnapshotRequest(Pane pane) {
 
-        pane.setOnMousePressed(e -> {
+        WritableImage image = pane.snapshot(new SnapshotParameters(), null);
 
-            pane.setCursor(Cursor.DEFAULT);
-            Rectangle r = getSelectedRect();
-            deSelect(r, outlinePicker, fillPicker, slider);
-            setSelectable(selectable);
+        File fileWork = new File("./work/");
+        if (!fileWork.exists()) {
+            fileWork.mkdir();
+        }
 
-        });
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setInitialDirectory(fileWork);
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("PNG Files (.*png)", ".*png");
+        fileChooser.getExtensionFilters().add(extFilter);
+
+        File file = fileChooser.showSaveDialog(pane.getScene().getWindow());
+        String path = file.getPath() + ".png";
+        System.out.println(path);
+        file = new File(path);
+//       File file = new File("pane.png");
+
+        try {
+            ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", file);
+        } catch (IOException ex) {
+            Logger.getLogger(PoseMakerController.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
     }
+
+//    public void handleCanvasClickedRequest(Pane pane, boolean selectable, ColorPicker outlinePicker, ColorPicker fillPicker, Slider slider) {
+//
+//        pane.setOnMousePressed(e -> {
+//
+//            pane.setCursor(Cursor.DEFAULT);
+//            Rectangle r = getSelectedRect();
+//            deSelect(r, outlinePicker, fillPicker, slider);
+//            setSelectable(selectable);
+//
+//        });
+//
+//    }
 //    
 //     public void handleCanvasDraggedRequest(double draggedX, double draggedY) {
 //
@@ -187,7 +237,6 @@ public class PoseMakerController {
 //        
 //    }
 //    
-
     public Rectangle paintRect(double clickedX, double clickedY, double draggedX, double draggedY, double sliderValue, Color borderColor, Color fillColor) {
 
         Rectangle r = new Rectangle(clickedX, clickedY, draggedX, draggedY);
@@ -195,24 +244,6 @@ public class PoseMakerController {
         r.setFill(fillColor);
         r.setStroke(borderColor);
         r.setStrokeWidth(sliderValue);
-
-//         r.setOnMousePressed(e -> {
-//                r.setStroke(Color.GREEN);
-//                r.setStrokeWidth(sliderValue);
-//                r.setStroke(Color.YELLOW);
-//                r.setStrokeWidth(10);
-//                setSelectedRect(r);
-////                setSelectable(false);
-//
-//            });
-//        if (selectable) {
-//            r.setOnMousePressed(e -> {
-//                r.setStroke(Color.YELLOW);
-//                r.setStrokeWidth(10);
-//                selectedRect = r;
-//
-//            });
-//        }
         select(r, sliderValue, borderColor, fillColor);
         return r;
     }
@@ -235,29 +266,35 @@ public class PoseMakerController {
 
 //        if (selector) {
         r.setOnMousePressed(e -> {
-            if(selector) {
-            if (selectedRect != null) {
-                selectedRect.setStroke(borderColor);
+            if (selector) {
+                if (selectedRect != null) {
+                    selectedRect.setStroke(borderColor);
+                    selectedRect.setStrokeWidth(sliderValue);
 //                getSelectedRect().setStrokeWidth(sliderValue);
-                r.setStroke(Color.YELLOW);
-                r.setStrokeWidth(10);
-                setSelectedRect(r);
+                    r.setStroke(Color.YELLOW);
+                    r.setStrokeWidth(10);
+                    setSelectedRect(r);
 //                setSelectable(false);
-            }
+                }
             }
 
         });
 //        }
-}
+    }
 
-    
-
-    public void deSelect(Rectangle r, ColorPicker outlinePicker, ColorPicker fillPicker, Slider slider) {
+    public void deSelect(Rectangle r, Color outlineColor, Color fillColor, double sliderValue) {
         r = getSelectedRect();
-        r.setFill(fillPicker.getValue());
-        r.setStroke(outlinePicker.getValue());
-        r.setStrokeWidth(slider.getValue());
+        r.setFill(fillColor);
+        r.setStroke(outlineColor);
+        r.setStrokeWidth(sliderValue);
 //        setSelectedRect(r);
+    }
+
+    public void handleColorChange(Color fillColor, Color borderColor, double sliderValue) {
+
+        selectedRect.setFill(fillColor);
+        selectedRect.setStroke(borderColor);
+        selectedRect.setStrokeWidth(sliderValue);
     }
 
     /**
@@ -266,6 +303,18 @@ public class PoseMakerController {
      */
     public void setSelectable(boolean selectable) {
         this.selectable = selectable;
+    }
+
+    public void setBorderColor(Color borderColor) {
+        outlineColor = borderColor;
+    }
+
+    public void setFillColor(Color fillColor) {
+        this.fillColor = fillColor;
+    }
+
+    public void setSlider(double sliderValue) {
+        this.sliderValue = sliderValue;
     }
 
     public void setSelectedRect(Rectangle selectedR) {
@@ -279,6 +328,18 @@ public class PoseMakerController {
 
     public Ellipse getSelectedEllipse() {
         return selectedEllipse;
+    }
+
+    public Color getBorderColor() {
+        return outlineColor;
+    }
+
+    public Color getfillColor() {
+        return fillColor;
+    }
+
+    public double getSliderValue() {
+        return sliderValue;
     }
 
 //    public Group getRectGroup() {
