@@ -1,13 +1,19 @@
 package pm.file;
 
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import javafx.collections.ObservableList;
+import javafx.scene.Node;
 import javafx.scene.control.TreeItem;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Ellipse;
@@ -19,6 +25,9 @@ import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
 import javax.json.JsonValue;
+import javax.json.JsonWriter;
+import javax.json.JsonWriterFactory;
+import javax.json.stream.JsonGenerator;
 import pm.data.DataManager;
 import saf.components.AppDataComponent;
 import saf.components.AppFileComponent;
@@ -75,12 +84,59 @@ public class FileManager implements AppFileComponent {
 
         StringWriter sw = new StringWriter();
         
+        ArrayList<String> stringObjList = new ArrayList();
+        
         DataManager dataManager = (DataManager)data;
         
         JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
         
         Pane pane = dataManager.getPane();
         
+        JsonArray nodesArray = arrayBuilder.build();
+        
+        JsonObject dataManagerJSO = Json.createObjectBuilder()
+                .add("shape_list", nodesArray)
+                .build();
+        
+        
+        Map<String, Object> properties = new HashMap<>(1);
+	properties.put(JsonGenerator.PRETTY_PRINTING, true);
+	JsonWriterFactory writerFactory = Json.createWriterFactory(properties);
+	JsonWriter jsonWriter = writerFactory.createWriter(sw);
+	jsonWriter.writeObject(dataManagerJSO);
+	jsonWriter.close();
+        
+        OutputStream os = new FileOutputStream(filePath);
+	JsonWriter jsonFileWriter = Json.createWriter(os);
+	jsonFileWriter.writeObject(dataManagerJSO);
+	String prettyPrinted = sw.toString();
+	PrintWriter pw = new PrintWriter(filePath);
+	pw.write(prettyPrinted);
+	pw.close();
+        
+//        ObservableList<Node> list = pane.getChildren();
+//        for(Node n : list) {
+//            stringObjList.add();
+//        }
+        
+        
+    }
+    
+    public JsonObject makeRectangleObject(Rectangle r) {
+        JsonObject jso = Json.createObjectBuilder()
+                .add("shape", "rectangle")
+                .add("x_coordinate", r.getX())
+                .add("y_coordinate", r.getY())
+                .add("height", r.getHeight())
+                .add("width", r.getWidth())
+                .add("stroke_width", r.getStrokeWidth())
+                .add("stroke_fill", r.getStroke().toString())
+                .add("fill", r.getFill().toString())
+                .build();
+        
+        return jso;
+                
+                
         
     }
       

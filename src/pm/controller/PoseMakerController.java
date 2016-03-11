@@ -73,6 +73,7 @@ public class PoseMakerController {
             rect = paintRect(e.getX(), e.getY(), .1, .1, slider.getValue(), outlinePicker.getValue(), fillPicker.getValue());
             pane.getChildren().add(rect);
 
+            System.out.println(pane.getChildren().get(0));
             pane.setOnMouseDragged(f -> {
                 if (rect != null) {
 
