@@ -1,5 +1,10 @@
 package pm.data;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import javafx.scene.layout.Pane;
+import javafx.scene.shape.Shape;
+import pm.file.FileManager;
 import saf.components.AppDataComponent;
 import saf.AppTemplate;
 
@@ -10,8 +15,18 @@ import saf.AppTemplate;
  * @author ?
  * @version 1.0
  */
+
+
+
 public class DataManager implements AppDataComponent {
     // THIS IS A SHARED REFERENCE TO THE APPLICATION
+    
+    ArrayList<Shape> shapes;
+    
+    HashMap<String, Shape> hashShapes;
+    
+    Pane canvas;
+    
     AppTemplate app;
 
     /**
@@ -23,6 +38,24 @@ public class DataManager implements AppDataComponent {
     public DataManager(AppTemplate initApp) throws Exception {
 	// KEEP THE APP FOR LATER
 	app = initApp;
+        
+        shapes = new ArrayList();
+        hashShapes = new HashMap();
+        
+        FileManager fileManager = (FileManager) app.getFileComponent();
+        
+    }
+    
+    public ArrayList getShape() {
+        return shapes;
+    }
+    
+    public HashMap getHashShape() {
+        return hashShapes;
+    }
+    
+    public Pane getPane() {
+        return canvas;
     }
 
     /**

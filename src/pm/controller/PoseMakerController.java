@@ -26,6 +26,7 @@ import javafx.scene.shape.Shape;
 import javafx.stage.FileChooser;
 import javax.imageio.ImageIO;
 import pm.PoseMaker;
+import pm.file.FileManager;
 
 /**
  *
@@ -70,6 +71,7 @@ public class PoseMakerController {
             rect = paintRect(e.getX(), e.getY(), .1, .1, slider.getValue(), outlinePicker.getValue(), fillPicker.getValue());
             pane.getChildren().add(rect);
 
+            
             pane.setOnMouseDragged(f -> {
                 if (rect != null) {
 
