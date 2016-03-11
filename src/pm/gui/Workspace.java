@@ -23,6 +23,7 @@ import javafx.scene.shape.Shape;
 import pm.PoseMaker;
 import pm.PropertyType;
 import pm.controller.PoseMakerController;
+import pm.data.DataManager;
 import properties_manager.PropertiesManager;
 import saf.AppTemplate;
 import saf.components.AppWorkspaceComponent;
@@ -140,6 +141,8 @@ public class Workspace extends AppWorkspaceComponent {
         PropertiesManager propsSingleton = PropertiesManager.getPropertiesManager();
 //        
         poseMakerController = new PoseMakerController((PoseMaker) app);
+        
+        DataManager dataManager = (DataManager) app.getDataComponent();
 
         topBtns = new HBox();
         movePane = new HBox();
@@ -234,6 +237,8 @@ public class Workspace extends AppWorkspaceComponent {
         workspace.getChildren().add(workspaceSplitPane);
 //        
         workspaceActivated = false;
+        
+        dataManager.setPane(canvas);
     }
 
     /**

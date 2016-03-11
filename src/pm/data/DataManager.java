@@ -57,6 +57,10 @@ public class DataManager implements AppDataComponent {
     public Pane getPane() {
         return canvas;
     }
+    
+    public void setPane(Pane canvas) {
+        this.canvas = canvas;
+    }
 
     /**
      * This function clears out the HTML tree and reloads it with the minimal
