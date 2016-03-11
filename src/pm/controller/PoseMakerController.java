@@ -43,6 +43,7 @@ public class PoseMakerController {
     Rectangle selectedRect = new Rectangle();
     Ellipse ellipse;
     Ellipse selectedEllipse;
+    Shape selectedShape = new Ellipse();
     String rectId;
     String ellipseId;
     Color outlineColor, fillColor;
@@ -72,7 +73,6 @@ public class PoseMakerController {
             rect = paintRect(e.getX(), e.getY(), .1, .1, slider.getValue(), outlinePicker.getValue(), fillPicker.getValue());
             pane.getChildren().add(rect);
 
-            
             pane.setOnMouseDragged(f -> {
                 if (rect != null) {
 
@@ -89,7 +89,7 @@ public class PoseMakerController {
 
     public void handleAddEllipseRequest(Pane pane, boolean selectable, ColorPicker outlinePicker, ColorPicker fillPicker, Slider slider) {
 
-       pane.setCursor(Cursor.CROSSHAIR);
+        pane.setCursor(Cursor.CROSSHAIR);
         selector = false;
         pane.setOnMousePressed(e -> {
             if (e == null) {
@@ -98,12 +98,10 @@ public class PoseMakerController {
             //System.out.println(e.getX() + ", "+ e.getY());
 
 //            rect = new Rectangle(e.getX(), e.getY(), 0, 0);   
-//            ellipse = paintEllipse(e.getX(), e.getY(), .1, .1, slider.getValue(), outlinePicker.getValue(), fillPicker.getValue());
-
-            ellipse = new Ellipse(e.getX(), e.getY(), 0, 0);
+            ellipse = paintEllipse(e.getX(), e.getY(), .1, .1, slider.getValue(), outlinePicker.getValue(), fillPicker.getValue());
+//            ellipse = new Ellipse(e.getX(), e.getY(), 0, 0);
             pane.getChildren().add(ellipse);
 
-            
             pane.setOnMouseDragged(f -> {
                 if (ellipse != null) {
 
@@ -128,7 +126,7 @@ public class PoseMakerController {
 //                list.remove(node);
 //            }
 
-            if (node.equals(selectedRect) || node.equals(selectedEllipse)) {
+            if (node.equals(selectedShape)) {
                 list.remove(node);
             }
 
@@ -141,7 +139,7 @@ public class PoseMakerController {
         pane.setCursor(Cursor.DEFAULT);
         selector = true;
         pane.setOnMouseClicked(e -> {
-            if (selectedRect != null && !isShape) {
+            if (selectedShape != null && !isShape) {
                 deSelect(outlineColor);
             }
             isShape = false;
@@ -152,8 +150,16 @@ public class PoseMakerController {
         });
         pane.setOnMouseDragged(e -> {
 
-            selectedRect.setX(e.getX() - (selectedRect.getWidth() / 2));
-            selectedRect.setY(e.getY() - (selectedRect.getHeight() / 2));
+            if (selectedShape instanceof Rectangle) {
+                Rectangle r = (Rectangle) selectedShape;
+                r.setX(e.getX() - (r.getWidth() / 2));
+                r.setY(e.getY() - (r.getHeight() / 2));
+            } else if (selectedShape instanceof Ellipse) {
+                Ellipse el = (Ellipse) selectedShape;
+//               el.setRadiusX(e.getX());
+                el.setCenterX(e.getX());
+                el.setCenterY(e.getY());
+            }
         });
 
     }
@@ -165,8 +171,8 @@ public class PoseMakerController {
         if (list.size() > 1) {
             for (Node node : list) {
 
-                list.remove(selectedRect);
-                list.add(selectedRect);
+                list.remove(selectedShape);
+                list.add(selectedShape);
 
             }
             list.removeAll(removeList);
@@ -180,8 +186,8 @@ public class PoseMakerController {
         if (list.size() > 1) {
             for (Node node : list) {
 
-                list.remove(selectedRect);
-                list.add(0, selectedRect);
+                list.remove(selectedShape);
+                list.add(0, selectedShape);
 
             }
         }
@@ -252,7 +258,7 @@ public class PoseMakerController {
         r.setFill(fillColor);
         r.setStroke(borderColor);
         r.setStrokeWidth(sliderValue);
-        select(r, sliderValue, borderColor, fillColor);
+        selectShape(r, sliderValue, borderColor, fillColor);
         return r;
     }
 
@@ -261,28 +267,64 @@ public class PoseMakerController {
         el.setFill(fillColor);
         el.setStroke(borderColor);
         el.setStrokeWidth(sliderValue);
-        ellipseId = el.getId();
-        el.setOnMousePressed(e -> {
-            el.setStroke(Color.YELLOW);
-            el.setStrokeWidth(10);
-            selectedEllipse = el;
-        });
+        selectShape(el, sliderValue, borderColor, fillColor);
         return el;
     }
 
-    public void select(Rectangle r, double sliderValue, Color borderColor, Color fillColor) {
+//    public void selectRect(Rectangle r, double sliderValue, Color borderColor, Color fillColor) {
+//
+////        if (selector) {
+//        r.setOnMousePressed(e -> {
+//            if (selector) {
+//                if (selectedShape != null) {
+//                    isShape = true;
+//                    selectedShape.setStroke(borderColor);
+//                    selectedShape.setStrokeWidth(sliderValue);
+////                getSelectedRect().setStrokeWidth(sliderValue);
+//                    r.setStroke(Color.YELLOW);
+//                    r.setStrokeWidth(10);
+//                    setSelectedShape(r);
+////                setSelectable(false);
+//                }
+//            }
+//
+//        });
+////        }
+//    }
+//    
+//     public void selectEllipse(Ellipse el, double sliderValue, Color borderColor, Color fillColor) {
+//
+////        if (selector) {
+//        el.setOnMousePressed(e -> {
+//            if (selector) {
+//                if (selectedShape != null) {
+//                    isShape = true;
+//                    selectedRect.setStroke(borderColor);
+//                    selectedRect.setStrokeWidth(sliderValue);
+////                getSelectedRect().setStrokeWidth(sliderValue);
+//                    el.setStroke(Color.YELLOW);
+//                    el.setStrokeWidth(10);
+//                    setSelectedShape(el);
+////                setSelectable(false);
+//                }
+//            }
+//
+//        });
+////        }
+//    }
+    public void selectShape(Shape s, double sliderValue, Color borderColor, Color fillColor) {
 
 //        if (selector) {
-        r.setOnMousePressed(e -> {
+        s.setOnMousePressed(e -> {
             if (selector) {
-                if (selectedRect != null) {
+                if (selectedShape != null) {
                     isShape = true;
-                    selectedRect.setStroke(borderColor);
-                    selectedRect.setStrokeWidth(sliderValue);
+                    selectedShape.setStroke(borderColor);
+                    selectedShape.setStrokeWidth(sliderValue);
 //                getSelectedRect().setStrokeWidth(sliderValue);
-                    r.setStroke(Color.YELLOW);
-                    r.setStrokeWidth(10);
-                    setSelectedRect(r);
+                    s.setStroke(Color.YELLOW);
+                    s.setStrokeWidth(10);
+                    setSelectedShape(s);
 //                setSelectable(false);
                 }
             }
@@ -294,8 +336,9 @@ public class PoseMakerController {
     public void deSelect(Color outlineColor) {
 //        r = getSelectedRect();
 //        r.setFill(fillColor);
-        selectedRect.setStroke(outlineColor);
-        selectedRect = null;
+//        selectedRect.setStroke(outlineColor);
+        selectedShape.setStroke(outlineColor);
+//        selectedRect = null;
 //        r.setStrokeWidth(sliderValue);
 //        setSelectedRect(r);
     }
@@ -332,8 +375,22 @@ public class PoseMakerController {
         selectedRect = selectedR;
     }
 
+    public void setSelectedEllipse(Ellipse selectedE) {
+//        if(selectable)
+        selectedEllipse = selectedE;
+    }
+
+    public void setSelectedShape(Shape selectedShape) {
+//        if(selectable)
+        this.selectedShape = selectedShape;
+    }
+
     public Rectangle getSelectedRect() {
         return selectedRect;
+    }
+
+    public Shape getSelectedShape() {
+        return selectedShape;
     }
 
     public Ellipse getSelectedEllipse() {
