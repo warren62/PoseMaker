@@ -49,6 +49,7 @@ public class PoseMakerController {
     double sliderValue;
     boolean selectable = true;
     boolean selector;
+    boolean isShape = false;
 
     private static int count = 0;
 
@@ -88,27 +89,31 @@ public class PoseMakerController {
 
     public void handleAddEllipseRequest(Pane pane, boolean selectable, ColorPicker outlinePicker, ColorPicker fillPicker, Slider slider) {
 
-        pane.setCursor(Cursor.CROSSHAIR);
-
-        setSelectable(selectable);
+       pane.setCursor(Cursor.CROSSHAIR);
+        selector = false;
         pane.setOnMousePressed(e -> {
             if (e == null) {
                 return;
             }
+            //System.out.println(e.getX() + ", "+ e.getY());
 
-//            ellipse = new Ellipse(e.getX(), e.getY(), 0, 0);
-            ellipse = paintEllipse(e.getX(), e.getY(), 0, 0, slider.getValue(), outlinePicker.getValue(), fillPicker.getValue());
-//            ellipse.setCenterX(e.getX());
-//            ellipse.setCenterY(e.getY());
+//            rect = new Rectangle(e.getX(), e.getY(), 0, 0);   
+//            ellipse = paintEllipse(e.getX(), e.getY(), .1, .1, slider.getValue(), outlinePicker.getValue(), fillPicker.getValue());
+
+            ellipse = new Ellipse(e.getX(), e.getY(), 0, 0);
             pane.getChildren().add(ellipse);
 
+            
             pane.setOnMouseDragged(f -> {
-
                 if (ellipse != null) {
-                    ellipse.setRadiusX(e.getX() - ellipse.getRadiusX());
-                    ellipse.setRadiusY(e.getY() - ellipse.getRadiusY());
+
+                    ellipse.setRadiusX(f.getX() - ellipse.getCenterX());
+                    ellipse.setRadiusY((f.getY() - ellipse.getCenterY()));
+
                 }
+
             });
+
         });
 
     }
@@ -136,9 +141,10 @@ public class PoseMakerController {
         pane.setCursor(Cursor.DEFAULT);
         selector = true;
         pane.setOnMouseClicked(e -> {
-//            if (selectedRect != null) {
-//                selectedRect.setStroke(outlineColor);
-//            }
+            if (selectedRect != null && !isShape) {
+                deSelect(outlineColor);
+            }
+            isShape = false;
         });
         pane.setOnMousePressed(e -> {
 //            deSelect(selectedRect, outlineColor, fillColor, sliderValue);
@@ -270,6 +276,7 @@ public class PoseMakerController {
         r.setOnMousePressed(e -> {
             if (selector) {
                 if (selectedRect != null) {
+                    isShape = true;
                     selectedRect.setStroke(borderColor);
                     selectedRect.setStrokeWidth(sliderValue);
 //                getSelectedRect().setStrokeWidth(sliderValue);
@@ -284,11 +291,12 @@ public class PoseMakerController {
 //        }
     }
 
-    public void deSelect(Rectangle r, Color outlineColor, Color fillColor, double sliderValue) {
-        r = getSelectedRect();
-        r.setFill(fillColor);
-        r.setStroke(outlineColor);
-        r.setStrokeWidth(sliderValue);
+    public void deSelect(Color outlineColor) {
+//        r = getSelectedRect();
+//        r.setFill(fillColor);
+        selectedRect.setStroke(outlineColor);
+        selectedRect = null;
+//        r.setStrokeWidth(sliderValue);
 //        setSelectedRect(r);
     }
 
