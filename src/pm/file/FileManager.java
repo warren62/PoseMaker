@@ -29,7 +29,6 @@ import javax.json.JsonValue;
 import javax.json.JsonWriter;
 import javax.json.JsonWriterFactory;
 import javax.json.stream.JsonGenerator;
-import pm.controller.PoseMakerController;
 import pm.data.DataManager;
 import saf.components.AppDataComponent;
 import saf.components.AppFileComponent;
@@ -188,8 +187,8 @@ public class FileManager implements AppFileComponent {
 	// LOAD THE TAG TREE
 	JsonArray jsonShapeArray = json.getJsonArray("shape_list");
         JsonArray jsonColor = json.getJsonArray("color");
-//        String backgroundColor = jsonColor.toString();
-//        System.out.println(backgroundColor);
+        
+        
 	for(int i = 0; i < jsonShapeArray.size(); i++) {
             JsonObject jsonShapeObjects = jsonShapeArray.getJsonObject(i);
             String shapeType = jsonShapeObjects.getString("shape");
@@ -243,7 +242,7 @@ public class FileManager implements AppFileComponent {
                 e.setFill(Color.valueOf(fill));
 //                Pane newPane = new Pane();
 
-                PoseMakerController ctrl = dataManager.getController();
+                
                 dataManager.getPane().getChildren().add(e);
 //                dataManager.setPane(newPane);                
             }
@@ -252,7 +251,7 @@ public class FileManager implements AppFileComponent {
         
 	
 	
-        
+        dataManager.getWorkspace().reloadWorkspace();
         
     }
 

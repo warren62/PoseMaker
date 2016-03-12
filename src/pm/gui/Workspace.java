@@ -3,7 +3,9 @@ package pm.gui;
 import javafx.scene.control.Button;
 import java.io.IOException;
 import java.util.ArrayList;
+import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.Label;
@@ -321,7 +323,12 @@ public class Workspace extends AppWorkspaceComponent {
      */
     @Override
     public void reloadWorkspace() {
-
+        ObservableList<Node> list = canvas.getChildren();
+        for(Node n : list) {
+            n.setOnMousePressed(e -> {
+                poseMakerController.selectShape((Shape) n, slider.getValue(), outlineColorPicker.getValue(), fillColorPicker.getValue());
+            });
+        }
     }
 
     public Color getBackgroundColor() {

@@ -1,0 +1,16 @@
+
+{
+    "shape_list":[
+        {
+            "shape":"ellipse",
+            "x_coordinate":"211.0",
+            "y_coordinate":"242.0",
+            "radius_x":"108.0",
+            "radius_y":"98.0",
+            "stroke_width":"0.0",
+            "stroke_fill":"0xffffffff",
+            "fill":"0xffffffff"
+        }
+    ],
+    "background_color":"ffffffff"
+}
