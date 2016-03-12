@@ -94,11 +94,13 @@ public class FileManager implements AppFileComponent {
         
         JsonArray nodesArray = arrayBuilder.build();
 
-        String backgroundColor =  dataManager.getWorkspace().getBackgroundColor().toString().substring(2, 10);
+//        String backgroundColor =  dataManager.getWorkspace().getBackgroundColor().toString().substring(2, 10);
+
+        Color backgroundColor = dataManager.getWorkspace().getBackgroundColor();
         
         JsonObject dataManagerJSO = Json.createObjectBuilder()
                 .add("shape_list", nodesArray)
-                .add("background_color", backgroundColor)
+                .add("background_color", makeBackgroundColorObject(backgroundColor))
                 .build();
 
         Map<String, Object> properties = new HashMap<>(1);
@@ -179,7 +181,7 @@ public class FileManager implements AppFileComponent {
 
         Pane newPane = new Pane();
         DataManager dataManager = (DataManager)data;
-//	dataManager.reset();
+	dataManager.reset();
 	
 	// LOAD THE JSON FILE WITH ALL THE DATA
 	JsonObject json = loadJSONFile(filePath);
@@ -188,6 +190,8 @@ public class FileManager implements AppFileComponent {
 	JsonArray jsonShapeArray = json.getJsonArray("shape_list");
         JsonArray jsonColor = json.getJsonArray("color");
         
+//        JsonObject jsonBackgroundColor = jsonColor.getJsonObject(0);
+//        System.out.println(backgroundColor);
         
 	for(int i = 0; i < jsonShapeArray.size(); i++) {
             JsonObject jsonShapeObjects = jsonShapeArray.getJsonObject(i);

@@ -278,11 +278,7 @@ public class Workspace extends AppWorkspaceComponent {
         dataManager.setPane(canvas);
         dataManager.setController(poseMakerController);
 
-        if (isDrawingShape) {
-            removeBtn.setDisable(true);
-            moveUpBtn.setDisable(true);
-            moveDownBtn.setDisable(true);
-        }
+        
     }
 
     /**

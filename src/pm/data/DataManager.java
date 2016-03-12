@@ -91,5 +91,7 @@ public class DataManager implements AppDataComponent {
     @Override
     public void reset() {
 
+        getPane().getChildren().clear();
+        
     }
 }
