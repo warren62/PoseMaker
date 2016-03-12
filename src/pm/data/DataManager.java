@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Shape;
+import pm.controller.PoseMakerController;
 import pm.file.FileManager;
+import pm.gui.Workspace;
 import saf.components.AppDataComponent;
 import saf.AppTemplate;
 
@@ -28,6 +30,10 @@ public class DataManager implements AppDataComponent {
     Pane canvas;
     
     AppTemplate app;
+    
+    Workspace workspace;
+    
+    PoseMakerController controller;
 
     /**
      * THis constructor creates the data manager and sets up the
@@ -62,6 +68,21 @@ public class DataManager implements AppDataComponent {
         this.canvas = canvas;
     }
 
+    public void setWorkspace(Workspace w) {
+        workspace = w;
+    }
+    
+    public Workspace getWorkspace() {
+        return workspace;
+    }
+    
+    public void setController(PoseMakerController c) {
+        controller = c;
+    }
+    
+    public PoseMakerController getController() {
+        return controller;
+    }
     /**
      * This function clears out the HTML tree and reloads it with the minimal
      * tags, like html, head, and body such that the user can begin editing a

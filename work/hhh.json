@@ -1,0 +1,26 @@
+
+{
+    "shape_list":[
+        {
+            "shape":"ellipse",
+            "x_coordinate":"439.0",
+            "y_coordinate":"379.0",
+            "radius_x":"157.0",
+            "radius_y":"81.0",
+            "stroke_width":"0.0",
+            "stroke_fill":"0xffffffff",
+            "fill":"0xffffffff"
+        },
+        {
+            "shape":"ellipse",
+            "x_coordinate":"980.0",
+            "y_coordinate":"468.0",
+            "radius_x":"112.0",
+            "radius_y":"103.0",
+            "stroke_width":"0.0",
+            "stroke_fill":"0xffffffff",
+            "fill":"0xffffffff"
+        }
+    ],
+    "background_color":"ffffffff"
+}

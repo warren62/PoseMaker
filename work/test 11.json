@@ -1,0 +1,15 @@
+
+{
+    "shape_list":[
+        {
+            "shape":"rectangle",
+            "x_coordinate":"163.0",
+            "y_coordinate":"123.0",
+            "height":"703.0",
+            "width":"8.0",
+            "stroke_width":"0.0",
+            "stroke_fill":"0xffffffff",
+            "fill":"0xffffffff"
+        }
+    ]
+}

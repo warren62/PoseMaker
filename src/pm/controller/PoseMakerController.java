@@ -195,6 +195,12 @@ public class PoseMakerController {
 
     }
 
+    public void handleBackgroundColorRequset(Pane pane, ColorPicker colorPicker) {
+        String colorBackground = colorPicker.getValue().toString();
+        pane.setStyle("-fx-background-color: #" + colorBackground.substring(2));
+        
+    }
+    
     public void handleSnapshotRequest(Pane pane) {
 
         WritableImage image = pane.snapshot(new SnapshotParameters(), null);
@@ -324,13 +330,19 @@ public class PoseMakerController {
                     selectedShape.setStrokeWidth(sliderValue);
 //                getSelectedRect().setStrokeWidth(sliderValue);
                     s.setStroke(Color.YELLOW);
-                    s.setStrokeWidth(10);
+                    if(sliderValue < 10) {
+                        s.setStrokeWidth(10);
+                    }else {
+                        s.setStrokeWidth(sliderValue);
+                    }
+//                    s.setStrokeWidth(10);
                     setSelectedShape(s);
 //                setSelectable(false);
                 }
             }
 
         });
+
 //        }
     }
 
@@ -346,10 +358,55 @@ public class PoseMakerController {
 
     public void handleColorChange(Color fillColor, Color borderColor, double sliderValue) {
 
-        selectedRect.setFill(fillColor);
-        selectedRect.setStroke(borderColor);
-        selectedRect.setStrokeWidth(sliderValue);
+        selectedShape.setFill(fillColor);
+        selectedShape.setStroke(borderColor);
+        selectedShape.setStrokeWidth(sliderValue);
     }
+
+//    public void loadShapeAddHandlers(Pane pane, Shape s, Color borderColor, Color strokeColor, double strokeWidth) {
+//
+//        s.setOnMousePressed(e -> {
+//            if (selector) {
+//                if (selectedShape != null) {
+//                    isShape = true;
+//                    selectedShape.setStroke(borderColor);
+//                    selectedShape.setStrokeWidth(sliderValue);
+////                getSelectedRect().setStrokeWidth(sliderValue);
+//                    s.setStroke(Color.YELLOW);
+//                    s.setStrokeWidth(10);
+//                    setSelectedShape(s);
+////                setSelectable(false);
+//                }
+//            }
+//
+//        });
+//
+//        pane.setCursor(Cursor.CROSSHAIR);
+//        selector = false;
+//        pane.setOnMousePressed(e -> {
+//            if (e == null) {
+//                return;
+//            }
+//            //System.out.println(e.getX() + ", "+ e.getY());
+//
+////            rect = new Rectangle(e.getX(), e.getY(), 0, 0);   
+//            rect = paintRect(e.getX(), e.getY(), .1, .1, slider.getValue(), outlinePicker.getValue(), fillPicker.getValue());
+//            pane.getChildren().add(rect);
+//
+//            System.out.println(pane.getChildren().get(0));
+//            pane.setOnMouseDragged(f -> {
+//                if (rect != null) {
+//
+//                    rect.setWidth((f.getX() - rect.getX()));
+//                    rect.setHeight((f.getY() - rect.getY()));
+//
+//                }
+//
+//            });
+//
+//        });
+//
+//    }
 
     /**
      *

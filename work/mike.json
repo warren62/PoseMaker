@@ -1,0 +1,36 @@
+
+{
+    "shape_list":[
+        {
+            "shape":"rectangle",
+            "x_coordinate":"467.0",
+            "y_coordinate":"391.0",
+            "height":"192.0",
+            "width":"607.0",
+            "stroke_width":"0.0",
+            "stroke_fill":"0xffffffff",
+            "fill":"0xffffffff"
+        },
+        {
+            "shape":"ellipse",
+            "x_coordinate":"249.0",
+            "y_coordinate":"314.0",
+            "radius_x":"-18.0",
+            "radius_y":"53.0",
+            "stroke_width":"0.0",
+            "stroke_fill":"0xffffffff",
+            "fill":"0xffffffff"
+        },
+        {
+            "shape":"ellipse",
+            "x_coordinate":"260.0",
+            "y_coordinate":"201.0",
+            "radius_x":"102.0",
+            "radius_y":"78.0",
+            "stroke_width":"0.0",
+            "stroke_fill":"0xffffffff",
+            "fill":"0x4d1a4dff"
+        }
+    ],
+    "background_color":"ffffffff"
+}

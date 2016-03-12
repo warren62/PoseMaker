@@ -16,6 +16,7 @@ import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.TreeItem;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Ellipse;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
@@ -28,6 +29,7 @@ import javax.json.JsonValue;
 import javax.json.JsonWriter;
 import javax.json.JsonWriterFactory;
 import javax.json.stream.JsonGenerator;
+import pm.controller.PoseMakerController;
 import pm.data.DataManager;
 import saf.components.AppDataComponent;
 import saf.components.AppFileComponent;
@@ -93,8 +95,11 @@ public class FileManager implements AppFileComponent {
         
         JsonArray nodesArray = arrayBuilder.build();
 
+        String backgroundColor =  dataManager.getWorkspace().getBackgroundColor().toString().substring(2, 10);
+        
         JsonObject dataManagerJSO = Json.createObjectBuilder()
                 .add("shape_list", nodesArray)
+                .add("background_color", backgroundColor)
                 .build();
 
         Map<String, Object> properties = new HashMap<>(1);
@@ -121,11 +126,11 @@ public class FileManager implements AppFileComponent {
     public JsonObject makeRectangleObject(Rectangle r) {
         JsonObject jso = Json.createObjectBuilder()
                 .add("shape", "rectangle")
-                .add("x_coordinate", r.getX())
-                .add("y_coordinate", r.getY())
-                .add("height", r.getHeight())
-                .add("width", r.getWidth())
-                .add("stroke_width", r.getStrokeWidth())
+                .add("x_coordinate",  "" + r.getX() + "")
+                .add("y_coordinate", "" + r.getY() + "")
+                .add("height", "" + r.getHeight() + "" )
+                .add("width", "" + r.getWidth() + "")
+                .add("stroke_width", "" + r.getStrokeWidth() + "")
                 .add("stroke_fill", r.getStroke().toString())
                 .add("fill", r.getFill().toString())
                 .build();
@@ -137,17 +142,24 @@ public class FileManager implements AppFileComponent {
     public JsonObject makeEllipseObject(Ellipse e) {
         JsonObject jso = Json.createObjectBuilder()
                 .add("shape", "ellipse")
-                .add("x_coordinate", e.getCenterX())
-                .add("y_coordinate", e.getCenterY())
-                .add("radius_x", e.getRadiusX())
-                .add("radius_y", e.getRadiusY())
-                .add("stroke_width", e.getStrokeWidth())
+                .add("x_coordinate", "" + e.getCenterX() + "")
+                .add("y_coordinate", "" + e.getCenterY() + "")
+                .add("radius_x", "" + e.getRadiusX() + "")
+                .add("radius_y", "" + e.getRadiusY() + "")
+                .add("stroke_width", "" + e.getStrokeWidth() + "")
                 .add("stroke_fill", e.getStroke().toString())
                 .add("fill", e.getFill().toString())
                 .build();
 
         return jso;
 
+    }
+    
+    public JsonObject makeBackgroundColorObject(Color color) {
+        JsonObject jso = Json.createObjectBuilder()
+                .add("color", color.toString())
+                .build();
+        return jso;
     }
 
     /**
@@ -166,7 +178,7 @@ public class FileManager implements AppFileComponent {
     @Override
     public void loadData(AppDataComponent data, String filePath) throws IOException {
 
-        
+        Pane newPane = new Pane();
         DataManager dataManager = (DataManager)data;
 //	dataManager.reset();
 	
@@ -175,9 +187,69 @@ public class FileManager implements AppFileComponent {
 	
 	// LOAD THE TAG TREE
 	JsonArray jsonShapeArray = json.getJsonArray("shape_list");
+        JsonArray jsonColor = json.getJsonArray("color");
+//        String backgroundColor = jsonColor.toString();
+//        System.out.println(backgroundColor);
 	for(int i = 0; i < jsonShapeArray.size(); i++) {
-            
+            JsonObject jsonShapeObjects = jsonShapeArray.getJsonObject(i);
+            String shapeType = jsonShapeObjects.getString("shape");
+            System.out.println(jsonShapeObjects);
+            if(shapeType.equalsIgnoreCase("rectangle")) {
+                Rectangle r = new Rectangle();
+                System.out.println("test");
+                String xCoord = jsonShapeObjects.getString("x_coordinate"); 
+                 System.out.println("test");
+                String yCoord = jsonShapeObjects.getString("y_coordinate");
+                String height = jsonShapeObjects.getString("height");
+                String width = jsonShapeObjects.getString("width");
+                String strokeWidth = jsonShapeObjects.getString("stroke_width");
+                String stroke = jsonShapeObjects.getString("stroke_fill").substring(2, 10);
+                String fill = jsonShapeObjects.getString("fill").substring(2, 10);
+                double xCoordDouble = Double.parseDouble(xCoord);
+                double yCoordDouble = Double.parseDouble(yCoord);
+                double heightDouble = Double.parseDouble(height);
+                double widthDouble = Double.parseDouble(width);
+                double strokeWidthDouble = Double.parseDouble(strokeWidth);
+                r.setX(xCoordDouble);
+                r.setY(yCoordDouble);
+                r.setHeight(heightDouble);
+                r.setWidth(widthDouble);
+                r.setStrokeWidth(strokeWidthDouble);
+                r.setStroke(Color.valueOf(stroke));
+                r.setFill(Color.valueOf(fill));
+//                Pane newPane = new Pane();
+                 dataManager.getPane().getChildren().add(r);
+//                dataManager.setPane(newPane);                
+            }else if(shapeType.equalsIgnoreCase("ellipse")) {
+                Ellipse e = new Ellipse();
+                String xCoord = jsonShapeObjects.getString("x_coordinate");               
+                String yCoord = jsonShapeObjects.getString("y_coordinate");
+                String radiusX = jsonShapeObjects.getString("radius_x");
+                String radiusY = jsonShapeObjects.getString("radius_y");
+                String strokeWidth = jsonShapeObjects.getString("stroke_width");
+                String stroke = jsonShapeObjects.getString("stroke_fill").substring(2, 10);
+                String fill = jsonShapeObjects.getString("fill").substring(2, 10);
+                double xCoordDouble = Double.parseDouble(xCoord);
+                double yCoordDouble = Double.parseDouble(yCoord);
+                double radiusXDouble = Double.parseDouble(radiusX);
+                double radiusYDouble = Double.parseDouble(radiusY);
+                double strokeWidthDouble = Double.parseDouble(strokeWidth);
+                e.setCenterX(xCoordDouble);
+                e.setCenterY(yCoordDouble);
+                e.setRadiusX(radiusXDouble);
+                e.setRadiusY(radiusYDouble);
+                e.setStrokeWidth(strokeWidthDouble);
+                e.setStroke(Color.valueOf(stroke));
+                e.setFill(Color.valueOf(fill));
+//                Pane newPane = new Pane();
+
+                PoseMakerController ctrl = dataManager.getController();
+                dataManager.getPane().getChildren().add(e);
+//                dataManager.setPane(newPane);                
+            }
         }
+//        dataManager.setPane(newPane);
+        
 	
 	
         
@@ -229,48 +301,7 @@ public class FileManager implements AppFileComponent {
 //        }
 //        
 //    }
-    public String getJsonString(Shape[] shapeList) {
-//        ObservableList<Node> shapeList = pane.getChildren();
-        String jsonString = "";
-        String listName = "\"shapes\"";
-        String shape = "\"shape\"";
-        String shapeType = "";
-        String fields = "\"fields\"";
-        String attributeName = "\"attribute_name\"";
-        String attributeValue = "\"attribute_value\"";
-        String fillColor = "\"fill color\"";
-        String strokeColor = "\"stroke color\"";
-        String strokeWidth = "\"stroke width\"";
-        String fillColorValue = "";
-        String strokeColorValue = "";
-        String strokeWidthValue = "";
-        for (Shape s : shapeList) {
-            fillColorValue = s.getFill().toString();
-            strokeColorValue = s.getStroke().toString();
-            strokeWidthValue = Double.toString(s.getStrokeWidth());
-            if (s instanceof Rectangle) {
-                shapeType = "\"rectangle\"";
-            } else if (s instanceof Ellipse) {
-                shapeType = "\"ellipse\"";
-            }
-            jsonString = "{ \n" + "\"" + listName + "\"" + ": [\n"
-                    + "{" + "\"" + shape + "\"" + ":" + "\"" + shapeType + "\"" + ",\n"
-                    + "\"" + fields + "\"" + ": [" + "\n { \n" + "\"" + attributeName + "\"" + ":" + fillColor + ", \n"
-                    + attributeValue + ":" + fillColorValue + "\n"
-                    + " }, \n"
-                    + " {\n"
-                    + attributeName + ":" + strokeColor + ", \n"
-                    + attributeValue + ":" + strokeColorValue + "\n"
-                    + " }, \n"
-                    + " {\n"
-                    + attributeName + ":" + strokeWidth + ", \n"
-                    + attributeValue + ":" + strokeWidthValue + "\n"
-                    + " }, \n"
-                    + " {\n"
-                    + "\n }";
-        }
-        return jsonString;
-    }
+    
 
 //    public void JsonIt(Pane pane) {
 //        JsonObject obj = new JsonObject();
@@ -279,6 +310,7 @@ public class FileManager implements AppFileComponent {
         JsonObject jsonObject = null;
         for (int i = 0; i < root.getChildren().size(); i++) {
             if (root.getChildren().get(i) instanceof Rectangle) {
+                
                 Rectangle r = (Rectangle) root.getChildren().get(i);
                 jsonObject = makeRectangleObject(r);
             } else if (root.getChildren().get(i) instanceof Ellipse) {
