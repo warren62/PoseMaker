@@ -46,7 +46,7 @@ public class PoseMakerController {
     Shape selectedShape = new Ellipse();
     String rectId;
     String ellipseId;
-    Color outlineColor, fillColor, originalColor;
+    Color outlineColor, fillColor, originalColor, selectedRectColor;
     double sliderValue;
     boolean selectable = true;
     boolean selector;
@@ -322,13 +322,15 @@ public class PoseMakerController {
     public void selectShape(Shape s, double sliderValue, Color borderColor, Color fillColor) {
 
 //        if (selector) {
+
         s.setOnMousePressed(e -> {
             if (selector) {
                 if (selectedShape != null) {
                     isShape = true;
-                    selectedShape.setStroke(borderColor);
+                    selectedShape.setStroke(selectedRectColor);
                     selectedShape.setStrokeWidth(sliderValue);
 //                getSelectedRect().setStrokeWidth(sliderValue);
+                    selectedRectColor = (Color) s.getStroke();
 
                     s.setStroke(Color.YELLOW);
                     if(sliderValue < 10) {
@@ -348,6 +350,7 @@ public class PoseMakerController {
     }
 
     public void deSelect(Color outlineColor) {
+//        selector = false;
 //        r = getSelectedRect();
 //        r.setFill(fillColor);
 //        selectedRect.setStroke(outlineColor);
